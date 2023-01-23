@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+model User {
+  id        String       @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  email     String       @unique
+  password  String
+  firstname String
+  lastname  String
+  avatar    String?
+  avatar_url String?
+  accounts  Account[]
+  tokens    UserTokens[]
+}
+
+model Account {
+  id       String @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  name     String
+  email    String
+  password String
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String @db.ObjectId
+}
+
+model UserTokens {
+  id            String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  refresh_token String
+  expires_date  DateTime
+  created_at    DateTime
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String   @unique @db.ObjectId
+}
