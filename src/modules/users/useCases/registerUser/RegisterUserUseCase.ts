@@ -1,10 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import { hash } from "bcrypt";
 
-import { RegisterUserError } from "./RegisterUserError";
-
 import { IUsersRepository } from "../../repositories/IUsersRepository";
 import { IRegisterUserDTO } from "@modules/users/dtos/IRegisterUserDTO";
+import { AppError } from "@shared/errors/AppError";
 
 interface IResponse {
   user: {
@@ -38,7 +37,7 @@ class RegisterUserUseCase {
     );
 
     if (userAlreadyExists) {
-      throw new RegisterUserError();
+      throw new AppError('User already exists', 500);
     }
 
     const hashedPassword = await hash(password, 10);

@@ -36,6 +36,14 @@ class InstitutionsRepository implements IInstitutionsRepository {
     });
     return institution;
   }
+
+  async deleteById(id: number): Promise<void> {
+    await prismaClient.institution.delete({
+      where: {
+        id: id,
+      },
+    });
+  }
 }
 
 export { InstitutionsRepository };
