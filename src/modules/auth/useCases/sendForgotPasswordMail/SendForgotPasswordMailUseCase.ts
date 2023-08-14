@@ -2,10 +2,10 @@ import { inject, injectable } from "tsyringe";
 import { v4 as uuidV4 } from "uuid";
 import { resolve } from "path";
 
-import { IUsersRepository } from "@modules/auth/repositories/IUsersRepository";
 import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
 import { IMailProvider } from "@shared/container/providers/MailProvider/IMailProvider";
 import { SendForgotPasswordMailError } from "./SendForgotPasswordMailError";
+import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
 
 @injectable()
 class SendForgotPasswordMailUseCase {
@@ -20,7 +20,14 @@ class SendForgotPasswordMailUseCase {
   async execute(email: string): Promise<void> {
     const user = await this.usersRepository.findByEmail(email);
 
-    const templatePath = resolve(__dirname, "..", "..", "views", "emails", "forgotPassword.hbs");
+    const templatePath = resolve(
+      __dirname,
+      "..",
+      "..",
+      "views",
+      "emails",
+      "forgotPassword.hbs"
+    );
 
     if (!user) {
       throw new SendForgotPasswordMailError();
@@ -28,12 +35,10 @@ class SendForgotPasswordMailUseCase {
 
     const token = uuidV4();
 
-    // const expires_date = this.dateProvider.addHours(3);
-
     const variables = {
-      name: user.firstname,
-      link: `${process.env.FORGOT_MAIL_URL}${token}`
-    }
+      name: user.name,
+      link: `${process.env.FORGOT_MAIL_URL}${token}`,
+    };
 
     await this.mailProvider.sendMail(
       email,
