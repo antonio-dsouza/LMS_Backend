@@ -5,6 +5,7 @@ interface IInstitutionsRepository {
   findById(id: number): Promise<Institution>;
   findByCnpj(cnpj: string): Promise<Institution>;
   save({ name, description, cnpj }: ICreateInstitutionDTO ): Promise<Institution>;
+  deleteById(id: number): Promise<void>;
 }
 
 export { IInstitutionsRepository };
