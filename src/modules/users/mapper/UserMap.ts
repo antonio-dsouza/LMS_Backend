@@ -1,21 +1,40 @@
 import { instanceToInstance } from "class-transformer";
-import { IUserResponseDTO } from "../dtos/IUserResponseDTO";
 import { User } from "../infra/prisma/entities/User";
 
 class UserMap {
   static toDTO({
-    email,
-    firstname,
     id,
-    avatar,
-    avatar_url,
+    name,
+    address,
+    email,
+    password,
+    active,
+    identification,
+    image,
+    phone,
+    last_login,
+    modality_id,
+    course_id,
+    pole_id,
+    institution_id,
+    group_id,
+    group,
   }: User): IUserResponseDTO {
     const user = instanceToInstance({
-      email,
-      firstname,
       id,
-      avatar,
-      avatar_url,
+      name,
+      address,
+      email,
+      active,
+      identification,
+      image,
+      phone,
+      last_login,
+      modality_id,
+      course_id,
+      pole_id,
+      institution_id,
+      group_id,
     });
     return user;
   }

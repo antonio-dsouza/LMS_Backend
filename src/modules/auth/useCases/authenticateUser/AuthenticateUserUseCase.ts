@@ -4,9 +4,9 @@ import { inject, injectable } from "tsyringe";
 
 import auth from "@config/auth";
 import { IDateProvider } from "@shared/container/providers/DateProvider/IDateProvider";
-import { IncorrectEmailOrPasswordError } from "./IncorrectUserOrPasswordError";
 import { IUsersRepository } from "@modules/users/repositories/IUsersRepository";
 import { IUsersTokensRepository } from "@modules/auth/repositories/IUsersTokensRepository";
+import { AppError } from "@shared/errors/AppError";
 
 interface IRequest {
   email: string;
@@ -42,22 +42,23 @@ class AuthenticateUserUseCase {
     } = auth;
 
     if (!user) {
-      throw new IncorrectEmailOrPasswordError();
+      throw new AppError("Incorrect email or password", 401);
     }
 
     const passwordMatch = await compare(password, user.password);
     const groups = user.group;
+    const institution = user.institution_id;
 
     if (!passwordMatch) {
-      throw new IncorrectEmailOrPasswordError();
+      throw new AppError("Incorrect email or password", 401);
     }
 
-    const token = sign({ groups }, secret_token, {
+    const token = sign({ groups, institution }, secret_token, {
       subject: String(user.id),
       expiresIn: expires_in_token,
     });
 
-    const refresh_token = sign({ email, groups }, secret_refresh_token, {
+    const refresh_token = sign({ email, groups, institution }, secret_refresh_token, {
       subject: String(user.id),
       expiresIn: expires_in_refresh_token,
     });
@@ -75,7 +76,7 @@ class AuthenticateUserUseCase {
     const tokenReturn: IResponse = {
       token,
       user: {
-        email: user.email,
+        email: user.email
       },
       refresh_token,
     };

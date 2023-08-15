@@ -7,6 +7,6 @@ const institutionRoutes = Router();
 
 const createInstitutionController = new CreateInstitutionController();
 
-institutionRoutes.post("/create", ensureAuthenticated, havePermission("institutions.create"), createInstitutionController.handle);
+institutionRoutes.post("/", ensureAuthenticated, havePermission("institutions.create"), createInstitutionController.handle);
 
 export { institutionRoutes };

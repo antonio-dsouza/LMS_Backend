@@ -1,3 +1,4 @@
+import { AppError } from "@shared/errors/AppError";
 import { Request, Response } from "express";
 import { container } from "tsyringe";
 
@@ -10,6 +11,10 @@ class ResetPasswordUserController {
     const resetPasswordUserUseCase = container.resolve(
       ResetPasswordUserUseCase
     );
+
+    if (!token || !password) {
+      throw new AppError("Invalid params!");
+    }
 
     await resetPasswordUserUseCase.execute({ token: String(token), password });
 

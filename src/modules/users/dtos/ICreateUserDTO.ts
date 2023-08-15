@@ -1,4 +1,4 @@
-interface IRegisterUserDTO {
+interface ICreateUserDTO {
   name: string;
   address?: string;
   email: string;
@@ -14,4 +14,5 @@ interface IRegisterUserDTO {
   institution_id: number;
   group_id: number;
 }
-export { IRegisterUserDTO };
+
+export { ICreateUserDTO };

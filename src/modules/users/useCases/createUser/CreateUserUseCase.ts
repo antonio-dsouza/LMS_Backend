@@ -1,10 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import { hash } from "bcrypt";
 
-import { RegisterUserError } from "./RegisterUserError";
-
 import { IUsersRepository } from "../../repositories/IUsersRepository";
-import { IRegisterUserDTO } from "@modules/users/dtos/IRegisterUserDTO";
+import { ICreateUserDTO } from "@modules/users/dtos/ICreateUserDTO";
+import { AppError } from "@shared/errors/AppError";
 
 interface IResponse {
   user: {
@@ -14,12 +13,13 @@ interface IResponse {
 }
 
 @injectable()
-class RegisterUserUseCase {
+class CreateUserUseCase {
   constructor(
     @inject("UsersRepository")
     private usersRepository: IUsersRepository,
-    ) {}
-  async execute({  name,
+  ) { }
+  async execute({
+    name,
     address,
     email,
     password,
@@ -32,18 +32,20 @@ class RegisterUserUseCase {
     course_id,
     pole_id,
     institution_id,
-    group_id }: IRegisterUserDTO): Promise<IResponse> {
+    group_id
+  }: ICreateUserDTO): Promise<IResponse> {
     const userAlreadyExists = await this.usersRepository.findByEmail(
       email
     );
 
     if (userAlreadyExists) {
-      throw new RegisterUserError();
+      throw new AppError("User already exists", 500);
     }
 
     const hashedPassword = await hash(password, 10);
 
-    const user = await this.usersRepository.save({ name,
+    const user = await this.usersRepository.save({
+      name,
       address,
       email,
       active,
@@ -56,7 +58,8 @@ class RegisterUserUseCase {
       pole_id,
       institution_id,
       group_id,
-      password: hashedPassword});
+      password: hashedPassword
+    });
 
     const userReturn: IResponse = {
       user: {
@@ -69,4 +72,4 @@ class RegisterUserUseCase {
   }
 }
 
-export { RegisterUserUseCase };
+export { CreateUserUseCase };

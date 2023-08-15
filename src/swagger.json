@@ -1,45 +1,151 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "RentX Documentation",
+    "title": "LMS Documentation",
     "description": "This is an API Rent",
     "version": "1.0.0",
     "contact": {
-      "email": "dani@rocketseat.com.br"
+      "email": "antonio@develonsystems.com.br"
     }
   },
   "paths": {
-    "/register": {
+    "/login": {
       "post": {
-        "tags": ["Authenticate"],
-        "summary": "Register user",
-        "description": "Register a new user",
-        "security": [{ "bearerAuth": [] }],
+        "tags": [
+          "Authenticate"
+        ],
+        "summary": "Login in application",
+        "description": "Login in application",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {},
+              "example": {
+                "email": "teste@mail.com",
+                "password": "12345"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "401": {
+            "description": "Incorrect email or password"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user by id",
+        "description": "Get user by id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "int"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "500": {
+            "description": "User no exists"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user",
+        "description": "Delete user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "User id",
+            "required": true,
+            "schema": {
+              "type": "int"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "500": {
+            "description": "User no exists"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users",
+        "description": "Get all users",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user",
+        "description": "Create a new user",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "firstname": {
-                    "type": "string"
-                  },
-                  "lastname": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                },
-                "example": {
-                  "firstname": "John",
-                  "lastname": "Carter",
-                  "email": "johncarter@safebank.com",
-                  "password": "123456"
-                }
+                "$ref": "#/definitions/User"
+              },
+              "example": {
+                "name": "teste",
+                "email": "teste@mail.com",
+                "password": "12345",
+                "group_id": 1
               }
             }
           }
@@ -52,183 +158,67 @@
             "description": "User already exists"
           }
         }
-      }
-    },
-    "/login": {
-      "post": {
-        "tags": ["Authenticate"],
-        "summary": "List all categories",
-        "description": "List all categories",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "description": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user",
+        "description": "Update user",
+        "security": [
+          {
+            "bearerAuth": []
           }
-        }
-      }
-    },
-    "/categories/import": {
-      "post": {
-        "tags": ["Category"],
-        "summary": "Upload a new category",
-        "description": "Upload a new category",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          }
-        }
-      }
-    },
-    "/specifications": {
-      "post": {
-        "tags": ["Specifications"],
-        "summary": "Create a specification",
-        "description": "Create a new specification",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/definitions/Specification"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "500": {
-            "description": "Specification already exists!"
-          }
-        }
-      }
-    },
-    "/sessions": {
-      "post": {
-        "tags": ["Session"],
-        "summary": "Authentication user",
-        "description": "Authentication user",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success"
-          },
-          "400": {
-            "description": "Email or password incorrect!"
-          }
-        }
-      }
-    },
-    "/cars": {
-      "post": {
-        "tags": ["Cars"],
-        "summary": "Create a new car",
-        "description": "Create a new car",
-        "security": [{ "bearerAuth": [] }],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/definitions/Car"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Car already exists!"
-          }
-        }
-      }
-    },
-    "/cars/images/{id}": {
-      "post": {
-        "tags": ["Cars"],
-        "summary": "Upload images",
-        "description": "Upload images",
-        "security": [{ "bearerAuth": [] }],
+        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "description": "Car id",
+            "description": "User id",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "int"
             }
           }
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "images": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  }
-                }
+                "$ref": "#/definitions/User"
+              },
+              "example": {
+                "name": "teste update"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "400": {
+            "description": "There is already a user with the email"
+          },
+          "500": {
+            "description": "User no exists"
+          }
+        }
+      }
+    },
+    "/institutions": {
+      "post": {
+        "tags": [
+          "Institutions"
+        ],
+        "summary": "Create a new institution",
+        "description": "Create a new institution",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {},
         "responses": {
           "201": {
             "description": "Created"
@@ -236,7 +226,7 @@
         }
       }
     }
-   },
+  },
   "definitions": {
     "Specification": {
       "type": "object",
@@ -249,29 +239,54 @@
         }
       }
     },
-    "Car": {
+    "User": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "int"
+        },
         "name": {
           "type": "string"
         },
-        "description": {
+        "address": {
           "type": "string"
         },
-        "daily_rate": {
-          "type": "number"
-        },
-        "license_plate": {
+        "email": {
           "type": "string"
         },
-        "fine_amount": {
-          "type": "number"
-        },
-        "brand": {
+        "password": {
           "type": "string"
         },
-        "category_id": {
+        "active": {
+          "type": "int"
+        },
+        "identification": {
           "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "last_login": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "modality_id": {
+          "type": "int"
+        },
+        "course_id": {
+          "type": "int"
+        },
+        "pole_id": {
+          "type": "int"
+        },
+        "institution_id": {
+          "type": "int"
+        },
+        "group_id": {
+          "type": "int"
         }
       }
     }

@@ -225,12 +225,12 @@ model user {
   modality_id           Int?
   course_id             Int?
   pole_id               Int?
-  institution_id        Int
+  institution_id        Int?
   group_id              Int
   discipline_has_user   discipline_has_user[]
   course                course?                 @relation(fields: [course_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_course1")
   group                 group                   @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_group1")
-  institution           institution             @relation(fields: [institution_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_institution1")
+  institution           institution?            @relation(fields: [institution_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_institution1")
   modality              modality?               @relation(fields: [modality_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_modality")
   pole                  pole?                   @relation(fields: [pole_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_pole1")
   user_has_notification user_has_notification[]
